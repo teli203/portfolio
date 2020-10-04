@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery Calculator</title>
+
+  <!-- Added link to the jQuery Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Added a link to Bootstrap-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <!-- Added a link to our external stylesheet-->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="jumbotron">
+    <h1 class="text-center">jQuery Calculator</h1>
+    <h3 class="text-center">Perform basic mathematic operations using the power of jQuery!</h3>
+  </div>
+
+  <div class="container">
+
+    <div class="row">
+
+      <!-- Calculator Card -->
+      <div class="col-lg-4">
+        <div class="card">
+          <h3 class="card-header">Calculator</h3>
+
+          <div class="card-body">
+            <div class="row">
+              <button id="button-1" class="col-sm-3 btn btn-primary number" value="1"><span>1</span></button>
+              <button id="button-2" class="col-sm-3 btn btn-primary number" value="2"><span>2</span></button>
+              <button id="button-3" class="col-sm-3 btn btn-primary number" value="3"><span>3</span></button>
+              <button id="button-plus" class="col-sm-3 btn btn-danger operator" value="plus">
+                <span>+</span>
+              </button>
+            </div>
+            <div class="row">
+              <button id="button-4" class="col-sm-3 btn btn-primary number" value="4"><span>4</span></button>
+              <button id="button-5" class="col-sm-3 btn btn-primary number" value="5"><span>5</span></button>
+              <button id="button-6" class="col-sm-3 btn btn-primary number" value="6"><span>6</span></button>
+              <button id="button-minus" class="col-sm-3 btn btn-danger operator" value="minus">
+                <span>&minus;</span>
+              </button>
+            </div>
+            <div class="row">
+              <button id="button-7" class="col-sm-3 btn btn-primary number" value="7"><span>7</span></button>
+              <button id="button-8" class="col-sm-3 btn btn-primary number" value="8"><span>8</span></button>
+              <button id="button-9" class="col-sm-3 btn btn-primary number" value="9"><span>9</span></button>
+              <button id="button-multiply" class="col-sm-3 btn btn-danger operator" value="times">
+                <span>&times;</span>
+              </button>
+            </div>
+            <div class="row">
+              <button id="button-0" class="col-sm-3 btn btn-primary number" value="0"><span>0</span></button>
+              <button id="button-divide" class="col-sm-3 btn btn-danger operator" value="divide">
+                <span>&divide;</span>
+              </button>
+              <button id="button-power" class="col-sm-3 btn btn-danger operator" value="power"><span>^</span></button>
+              <button id="button-equal" class="col-sm-3 btn btn-success equal" value="equals"><span>=</span></button>
+            </div>
+            <div class="row">
+              <button id="button-clear" class="col-sm-12 btn btn-dark clear" value="clear">
+                <span>clear</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="col-lg-6">
+        <div class="card">
+          <h3 class="card-header">Result</h3>
+          <div class="card-body">
+            <h1 id="first-number"></h1>
+            <h1 id="operator"></h1>
+            <h1 id="second-number"></h1>
+            <hr>
+            <h1 id="result"></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      // First step: define all global variables
+      // Anything that needs to be accessed in more
+      // than one function should be defined here!
+      var firstNumber = "";
+      var secondNumber = "";
+      var operator = "";
+      var result = 0;
+      var isOperatorChosen = false;
+      var isCalculated = false;
+
+      // **BONUS FEATURE**: Bind to all keyup
+      // events on the page, and append to the
+      // current number if the key pressed is numeric
+      $('body').on("keyup", function (evt) {
+        evt.preventDefault();
+        // TODO add support for operators here!
+        var pressedNumber = parseInt(evt.key);
+        if (isNaN(pressedNumber)) {
+          return;
+        }
+        appendToCurrentNumber(pressedNumber);
+      });
+
+      // Use a function to initialize our calculator.
+      // This way when the user hits clear, we can guarantee a reset of the app.
+      function initializeCalculator() {
+        firstNumber = "";
+        secondNumber = "";
+        operator = "";
+        result = 0;
+        isOperatorChosen = false;
+        isCalculated = false;
+
+        $("#first-number, #second-number, #operator, #result").empty();
+        // This is the equivalent of calling .empty() on each element sepaarately; i.e.
+        // $("#first-number").empty();
+        // $("#second-number").empty();
+        // $("#operator").empty();
+        // $("#result").empty();
+      }
+
+      // If operator is chosen, we should be writing the secondNumber, otherwise, the firstNumber
+      function appendToCurrentNumber(num) {
+        // Check if we've already run a calculation, and stop here if they have.
+        if (isCalculated) {
+          return;
+        }
+        // Append the given number to the current number (firstNumber or secondNumber)
+        if (isOperatorChosen) {
+          secondNumber += num;
+          $("#second-number").text(secondNumber);
+          return;
+        }
+        firstNumber += num;
+        $("#first-number").text(firstNumber);
+      }
+
+      // Handle user clicks of the individual numbers on the keypad
+      $(".number").on("click", function () {
+        appendToCurrentNumber($(this).val());
+      });
+
+      // Handler user clicks of the various operators on the keypad
+      $(".operator").on("click", function () {
+
+        // Check if a first number has NOT been selected
+        // Or we've already run a calculation, if so we just exit.
+        if (!firstNumber || isCalculated) {
+          return false;
+        }
+
+        // Set isOperatorChosen to true so we start writing to secondNumber
+        isOperatorChosen = true;
+
+        // Store off the operator
+        operator = $(this).val();
+
+        // Set the HTML of the #operator to the text of what was clicked
+        $("#operator").text($(this).text());
+      });
+
+      // Handle clicks of the "Equal" button on the keypad
+      $(".equal").on("click", function () {
+        // If we already clicked equal, don't do the calculation again
+        if (isCalculated) {
+          return false;
+        }
+
+        // Set isCalculated to true so that we don't get in a weird UI state by clicking buttons again
+        isCalculated = true;
+
+        // Use parseInt to convert our string representation of numbers into actual integers
+        firstNumber = parseInt(firstNumber);
+        secondNumber = parseInt(secondNumber);
+
+        // Based on the operator that was chosen,
+        // run the operation and then set the HTML of the result of that operation
+        if (operator === "plus") {
+          result = firstNumber + secondNumber;
+        } else if (operator === "minus") {
+          result = firstNumber - secondNumber;
+        } else if (operator === "times") {
+          result = firstNumber * secondNumber;
+        } else if (operator === "divide") {
+          result = firstNumber / secondNumber;
+        } else if (operator === "power") {
+          result = Math.pow(firstNumber, secondNumber);
+        } else {
+          alert("What is this operation??");
+        }
+
+        $("#result").text(result);
+
+        // NOTE: If you ever see or write a series of `if()`...`else if()` statements like above,
+        // that are all checking the same variable, then it would be better to use a `switch` statemenet!
+        // We haven't covered them in class yet yet, but here's the documentation:
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch
+        //
+        // This `switch` statement below is equivalent to the messy ifs above:
+        // switch (operator) {
+        // case "plus": // if (operator === "plus")
+        // result = firstNumber + secondNumber;
+        // break;
+        // case "minus": // if (operator === "minus")
+        // result = firstNumber - secondNumber;
+        // break;
+        // case "times":
+        // result = firstNumber * secondNumber;
+        // break;
+        // case "divide":
+        // result = firstNumber / secondNumber;
+        // break;
+        // case "power":
+        // result = Math.pow(firstNumber, secondNumber);
+        // break;
+        // default: // is like the final `else { ... }` statement
+        // alert("I'm not sure what you clicked, but I don't know how to '" + operator + "'!");
+        // result = "???";
+        // }
+        // It might take up more lines, but it's much easier to read (and thus to maintain!)
+
+      });
+
+      // Handle clicks of the "Clear" button on the keypad
+      $(".clear").on("click", function () {
+        // Reset the calculator by re-initializing it!
+        initializeCalculator();
+      });
+
+      // Call initializeCalculater so we can set the initial state of our app
+      initializeCalculator();
+    });
+  </script>
+
+</body>
+
+</html>
