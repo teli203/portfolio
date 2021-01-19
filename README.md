@@ -1,6 +1,6 @@
-# portfolio
- Portfolio
-This is Telicia's portfolio site, including descriptions and a showcase of previous web development projects and work. The portfolio also includes credentials and contact information for prospective collaborators and/or clients.
+# PORTFOLIO
+
+This is Telicia's portfolio site, including descriptions and a showcase of previous web development projects and work. The portfolio also includes credentials and contact information for prospective collaborators and/or clients. Thanks in advance for your time and effort!
 
 
 Technologies Used:
