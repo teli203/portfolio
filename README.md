@@ -9,5 +9,4 @@ CSS
 JavaScript
 React
 
-![](images/Telicia W.jpg)
 Visit my site @ https://teli203.github.io/portfolio/
