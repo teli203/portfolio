@@ -8,5 +8,5 @@ HTML5
 CSS
 JavaScript
 React
-
+![](images/Telicia W.png)
 Visit my site @ https://teli203.github.io/portfolio/
